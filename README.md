@@ -13,7 +13,7 @@ A fully offline document intelligence pipeline that ingests PDFs and text files,
 | **Classify** | Labels each document as Invoice / Resume / Utility Bill / Tax / Other / Unclassifiable |
 | **Extract** | Pulls structured fields per document type into `output.json` |
 | **Search** | FAISS-powered semantic search — find documents by meaning, not just keywords |
-| **QA (bonus)** | Local LLM (Phi-2) answers natural-language questions over retrieved context |
+| **QA (bonus)** | Local LLM  answers natural-language questions over retrieved context |
 
 All processing runs **100% locally** — no internet, no API keys required after initial model download.
 
@@ -168,11 +168,7 @@ faiss-cpu>=1.7.0
 numpy>=1.23.0
 ```
 
-Optional (bonus QA):
-```
-torch>=2.0.0
-transformers>=4.30.0
-```
+ 
 
 ---
 

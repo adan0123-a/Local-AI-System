@@ -1,7 +1,5 @@
-# =============================================================================
+ 
 # LOCAL AI SYSTEM FOR DOCUMENT PROCESSING
-# AI Engineer Technical Assessment
-# =============================================================================
 
 import os
 import json
@@ -32,10 +30,7 @@ except ImportError:
     LOCAL_LLM_AVAILABLE = False
     print("Warning: transformers/torch not installed. Bonus QA feature disabled.")
 
-
-# =============================================================================
 # UTILITY: JSON Serialization
-# =============================================================================
 
 class NumpyEncoder(json.JSONEncoder):
     """
@@ -54,10 +49,7 @@ class NumpyEncoder(json.JSONEncoder):
             return bool(obj)
         return super().default(obj)
 
-
-# =============================================================================
 # 1. DOCUMENT LOADER
-# =============================================================================
 
 class DocumentLoader:
     """Reads PDF and text files from a folder and extracts their text content."""
@@ -140,10 +132,7 @@ class DocumentLoader:
             print(f"    Error reading {txt_path.name}: {e}")
             return ""
 
-
-# =============================================================================
 # 2. DOCUMENT CLASSIFIER
-# =============================================================================
 
 class DocumentClassifier:
     """
@@ -165,11 +154,11 @@ class DocumentClassifier:
                     'line item', 'qty', 'unit price', 'vat'
                 ],
                 'patterns': [
-                    r'inv[-\s]?\d+',                        # INV-1234 or INV 1234
-                    r'invoice\s*[#no\.]*\s*:?\s*[\w\-]+',  # Invoice #: ABC-001
-                    r'total\s*:?\s*\$?\s*\d+[.,]\d{2}',    # Total: $1,250.00
-                    r'bill\s*to\s*:',                        # Bill To:
-                    r'payment\s*due\s*:',                    # Payment Due:
+                    r'inv[-\s]?\d+',                         
+                    r'invoice\s*[#no\.]*\s*:?\s*[\w\-]+',   
+                    r'total\s*:?\s*\$?\s*\d+[.,]\d{2}',     
+                    r'bill\s*to\s*:',                         
+                    r'payment\s*due\s*:',                    
                 ]
             },
             'Resume': {
@@ -249,7 +238,7 @@ class DocumentClassifier:
             max_possible = (len(data['keywords']) * 2) + (len(data['patterns']) * 3)
             scores[category] = (kw_score + pat_score) / max_possible
 
-        # --- Method 2: Semantic embedding similarity ---
+        # Semantic embedding similarity ---
         doc_embedding = self.model.encode([text[:2000]])[0]  # Limit to 2000 chars for speed
         for category, prototype in self.category_prototypes.items():
             similarity = float(cosine_similarity([doc_embedding], [prototype])[0][0])
@@ -270,26 +259,20 @@ class DocumentClassifier:
 
         return best_category, round(best_score, 4)
 
-
-# =============================================================================
 # 3. INFORMATION EXTRACTOR
-# =============================================================================
 
 class InformationExtractor:
     """
     Extracts structured fields from documents based on their classified type.
     Uses regex patterns ordered from most-specific to least-specific.
     """
-
-    # ------------------------------------------------------------------
     # Invoice Extraction
-    # ------------------------------------------------------------------
 
     def extract_invoice(self, text: str) -> Dict:
         """Extract: invoice_number, date, company, total_amount"""
 
         # --- Invoice Number ---
-        # Order matters: most specific first to avoid grabbing company names
+         
         invoice_number = None
         invoice_patterns = [
             r'invoice\s*(?:#|no\.?|number)\s*:?\s*([A-Z0-9][\w\-/]{2,20})',
@@ -364,8 +347,7 @@ class InformationExtractor:
             'company': company,
             'total_amount': total_amount
         }
-
-    # ------------------------------------------------------------------
+ 
     # Resume Extraction
     # ------------------------------------------------------------------
 
@@ -451,8 +433,7 @@ class InformationExtractor:
             'phone': phone,
             'experience_years': experience_years
         }
-
-    # ------------------------------------------------------------------
+ 
     # Utility Bill Extraction
     # ------------------------------------------------------------------
 
@@ -525,8 +506,7 @@ class InformationExtractor:
             'usage_kwh': usage_kwh,
             'amount_due': amount_due
         }
-
-    # ------------------------------------------------------------------
+ 
     # Tax Document Extraction
     # ------------------------------------------------------------------
 
@@ -561,8 +541,7 @@ class InformationExtractor:
             'tax_year': tax_year,
             'total_tax': amount
         }
-
-    # ------------------------------------------------------------------
+ 
     # Main dispatch
     # ------------------------------------------------------------------
 
@@ -577,10 +556,9 @@ class InformationExtractor:
         extractor_fn = extractors.get(category)
         if extractor_fn:
             return extractor_fn(text)
-        return {}  # Other / Unclassifiable: no extraction required
+        return {}  
 
-
-# =============================================================================
+ 
 # 4. SEMANTIC SEARCH
 # =============================================================================
 
@@ -673,9 +651,8 @@ class SemanticSearch:
 
         return results
 
-
-# =============================================================================
-# 5. BONUS: LOCAL QUESTION ANSWERING (optional)
+ 
+# 5.  LOCAL QUESTION ANSWERING 
 # =============================================================================
 
 class LocalQuestionAnswerer:
@@ -738,8 +715,7 @@ class LocalQuestionAnswerer:
         except Exception as e:
             return f"Error during answer generation: {e}"
 
-
-# =============================================================================
+ 
 # MAIN PIPELINE
 # =============================================================================
 
@@ -751,8 +727,7 @@ def main():
 
     INPUT_FOLDER = "./documents"
     OUTPUT_FILE = "output.json"
-
-    # ------------------------------------------------------------------
+ 
     # STEP 1: Load documents
     # ------------------------------------------------------------------
     print("\n📁  STEP 1: Ingesting documents from folder...")
@@ -764,7 +739,7 @@ def main():
         print("  Please add your documents there and re-run.")
         return
 
-    # ------------------------------------------------------------------
+ 
     # STEP 2: Classify + Extract
     # ------------------------------------------------------------------
     print("\n🏷️   STEP 2: Classifying and extracting structured data...")
@@ -792,7 +767,7 @@ def main():
         record.update(extracted)
         output[filename] = record
 
-    # ------------------------------------------------------------------
+ 
     # STEP 3: Save output.json
     # (use NumpyEncoder to handle float32/int64 from numpy)
     # ------------------------------------------------------------------
@@ -805,14 +780,13 @@ def main():
         print(f"  ❌  Failed to save JSON: {e}")
         return
 
-    # ------------------------------------------------------------------
+     
     # STEP 4: Build semantic search index
     # ------------------------------------------------------------------
     print("\n🔍  STEP 4: Building semantic search index...")
     searcher = SemanticSearch()
     searcher.build_index(documents)
 
-    # ------------------------------------------------------------------
     # STEP 5: Interactive CLI
     # ------------------------------------------------------------------
     print("\n💬  STEP 5: Interactive Semantic Search")

@@ -1,0 +1,38 @@
+{
+  "Adan's Resume.pdf": {
+    "class": "Resume",
+    "classification_confidence": 0.85,
+    "name": "ADAN NAVEED",
+    "email": "adan36141@gmail.com",
+    "phone": "+92 3256955235",
+    "experience_years": 0
+  },
+  "invoice.pdf": {
+    "class": "Invoice",
+    "classification_confidence": 0.92,
+    "invoice_number": "INV-2026-001",
+    "date": "2026-05-23",
+    "company": "ACME Corporation",
+    "total_amount": 1375.00
+  },
+  "invoice1.pdf": {
+    "class": "Unclassifiable",
+    "classification_confidence": 0.05
+  },
+  "Resume 2.pdf": {
+    "class": "Resume",
+    "classification_confidence": 0.82,
+    "name": "ADAN NAVEED",
+    "email": "adan36141@gmail.com",
+    "phone": "+92 325 6955235",
+    "experience_years": 2
+  },
+  "utility_bill.pdf": {
+    "class": "Utility Bill",
+    "classification_confidence": 0.88,
+    "account_number": "ACC-87456321",
+    "date": "2026-05-23",
+    "usage_kwh": 845.0,
+    "amount_due": 150.00
+  }
+}
